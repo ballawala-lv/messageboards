@@ -1,0 +1,34 @@
+{
+    "AppSyncApiName": "messageboardsapi",
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authmessageboardpools",
+            "Outputs.UserPoolId"
+        ]
+    },
+    "QueryGetBoardResponse": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Query.getBoard.response.1536865352772",
+    "MutationUpdateBoardResponse": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Mutation.updateBoard.response.1536865352772",
+    "QueryListBoardsResponse": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Query.listBoards.response.1536865352772",
+    "MutationCreateMessageResponse": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Mutation.createMessage.response.1536865352772",
+    "MessageBoardResponse": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Message.board.response.1536865352772",
+    "MutationDeleteBoardResponse": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Mutation.deleteBoard.response.1536865352772",
+    "BoardMessagesResponse": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Board.messages.response.1536865352772",
+    "QueryGetBoardRequest": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Query.getBoard.request.1536865352772",
+    "MutationUpdateMessageRequest": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Mutation.updateMessage.request.1536865352772",
+    "MessageBoardRequest": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Message.board.request.1536865352772",
+    "MutationDeleteMessageResponse": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Mutation.deleteMessage.response.1536865352772",
+    "MutationCreateBoardResponse": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Mutation.createBoard.response.1536865352772",
+    "QueryGetMessageResponse": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Query.getMessage.response.1536865352772",
+    "MutationUpdateMessageResponse": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Mutation.updateMessage.response.1536865352772",
+    "QueryListMessagesResponse": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Query.listMessages.response.1536865352772",
+    "MutationDeleteBoardRequest": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Mutation.deleteBoard.request.1536865352772",
+    "QueryListMessagesRequest": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Query.listMessages.request.1536865352772",
+    "QueryListBoardsRequest": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Query.listBoards.request.1536865352772",
+    "BoardMessagesRequest": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Board.messages.request.1536865352772",
+    "MutationUpdateBoardRequest": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Mutation.updateBoard.request.1536865352772",
+    "MutationCreateBoardRequest": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Mutation.createBoard.request.1536865352772",
+    "MutationDeleteMessageRequest": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Mutation.deleteMessage.request.1536865352772",
+    "schemaGraphql": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/schema.graphql.1536865352772",
+    "QueryGetMessageRequest": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Query.getMessage.request.1536865352772",
+    "MutationCreateMessageRequest": "s3://messageboards-20180913130001-deployment/amplify-appsync-files/Mutation.createMessage.request.1536865352772"
+}

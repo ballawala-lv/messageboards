@@ -1,0 +1,14 @@
+{
+    "providers": {
+        "awscloudformation": {
+            "AuthRoleName": "messageboards-20180913130001-authRole",
+            "UnauthRoleArn": "arn:aws:iam::614167019250:role/messageboards-20180913130001-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::614167019250:role/messageboards-20180913130001-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "messageboards-20180913130001-deployment",
+            "UnauthRoleName": "messageboards-20180913130001-unauthRole",
+            "StackName": "messageboards-20180913130001",
+            "StackId": "arn:aws:cloudformation:us-east-1:614167019250:stack/messageboards-20180913130001/740d1b00-b776-11e8-9483-50fae97e0835"
+        }
+    }
+}

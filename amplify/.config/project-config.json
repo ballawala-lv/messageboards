@@ -1,0 +1,20 @@
+{
+    "projectName": "messageboards",
+    "projectPath": "/Users/all1164/Development/tutorials/messageboards",
+    "defaultEditor": "idea14ce",
+    "frontendHandler": {
+        "javascript": "/Users/all1164/.nvm/versions/node/v8.11.4/lib/node_modules/@aws-amplify/cli/node_modules/amplify-frontend-javascript"
+    },
+    "javascript": {
+        "framework": "react",
+        "config": {
+            "SourceDir": "src",
+            "DistributionDir": "build",
+            "BuildCommand": "npm run-script build",
+            "StartCommand": "npm run-script start"
+        }
+    },
+    "providers": {
+        "awscloudformation": "/Users/all1164/.nvm/versions/node/v8.11.4/lib/node_modules/@aws-amplify/cli/node_modules/amplify-provider-awscloudformation"
+    }
+}

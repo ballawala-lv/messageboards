@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/messageboards-20180913130001-deployment/amplify-cfn-templates/auth/messageboardpools-cloudformation-template.yml",
 				"logicalId": "authmessageboardpools"
 			},
-			"lastPushTimeStamp": "2018-09-20T03:00:09.342Z",
+			"lastPushTimeStamp": "2018-09-27T22:19:33.639Z",
 			"output": {
 				"AppClientSecret": "hipcv1pr8pt76d2ujv896sgth777ra7a1rdrkshqvs7ngde5rr2",
 				"UserPoolId": "us-east-1_h0xBaJvIH",
@@ -33,24 +33,24 @@
 		}
 	},
 	"api": {
-		"messageboardsapi": {
+		"messageboards": {
 			"service": "AppSync",
 			"providerPlugin": "awscloudformation",
 			"output": {
 				"securityType": "AMAZON_COGNITO_USER_POOLS",
-				"GraphQLAPIIdOutput": "qcigeowfvnczzevn3ye3yb7aly",
-				"GraphQLAPIEndpointOutput": "https://dozhj4yhnvhibdbriutywclswm.appsync-api.us-east-1.amazonaws.com/graphql",
-				"GraphQLAPIKeyOutput": "da2-iqtaelhxnzch3mz7m2qcr4xrai",
+				"GraphQLAPIIdOutput": "gmv2i3t3brdnzifkqw7hpvfabu",
+				"GraphQLAPIEndpointOutput": "https://ofu6xy23tnfv3cfer75ytqrdmm.appsync-api.us-east-1.amazonaws.com/graphql",
+				"GraphQLAPIKeyOutput": "da2-l4ykpbzsljbmnouvdjidqwd7lu",
 				"AuthCognitoUserPoolIdOutput": "us-east-1_h0xBaJvIH",
 				"AuthCognitoUserPoolNativeClientId": "See UserPool: us-east-1_h0xBaJvIH",
 				"AuthCognitoUserPoolJSClientId": "See UserPool: us-east-1_h0xBaJvIH"
 			},
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/messageboards-20180913130001-deployment/amplify-cfn-templates/api/cloudformation-template.json",
-				"logicalId": "apimessageboardsapi"
+				"logicalId": "apimessageboards"
 			},
-			"lastPushTimeStamp": "2018-09-20T03:00:09.346Z",
-			"lastPushDirHash": "bOktzmN+AgCuwa9n8/325O2SteU="
+			"lastPushTimeStamp": "2018-09-27T22:19:33.641Z",
+			"lastPushDirHash": "wAEneZ6Ok+3XpyjC6iDz5r9E+fg="
 		}
 	}
 }

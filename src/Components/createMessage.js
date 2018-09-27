@@ -1,13 +1,20 @@
 import React, {Component} from 'react';
 import {Mutation} from 'react-apollo';
 import CreateMessage from '../Queries/addMessage';
+import Button from '@material-ui/core/Button';
+import Input from '@material-ui/core/Input';
 import {Auth} from 'aws-amplify';
 
 
 export default class CreateMessageApp extends Component {
-	constructor(props) {
-		super(props);
-		}
+	state = {
+		message: ''
+	};
+
+	handleChange = (e) => {
+		this.setState({message: e.target.value});
+	}
+
 	render() {
 		let input;
 		let {user} = this.props;
@@ -16,8 +23,6 @@ export default class CreateMessageApp extends Component {
 			<Mutation mutation={CreateMessage}>
 				{
 					(createMessage, {data}) => {
-						console.log('createMessage is', createMessage);
-						console.log('data is', data);
 						return (
 							<div>
 								<form onSubmit={
@@ -26,18 +31,14 @@ export default class CreateMessageApp extends Component {
 										createMessage({
 											variables: {
 												username: user,
-												message: input.value
+												message: this.state.message
 											}
 										})
-										input.value = "";
+										this.setState({message: ''})
 									}
 								}>
-									<input
-										ref={node => {
-											input = node;
-										}}
-									/>
-								<button type="submit">Send</button>
+									<Input onChange={this.handleChange} value={this.state.message}/>
+									<Button variant="raised" color="primary" type="submit">Send</Button>
 								</form>
 							</div>
 						)

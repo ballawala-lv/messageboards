@@ -16,7 +16,7 @@ export default class MessageBoard extends Component {
 						console.log('msg is', m);
 						return (
 							<li>
-								{moment(m.createdAt).format('MMMM Do YYYY, h:mm:ss a')} - {m.username}: {m.message}
+								<small>{moment(m.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</small> - <b>{m.username}:</b> {m.message}
 							</li>
 						)
 					})
@@ -55,7 +55,6 @@ export default class MessageBoard extends Component {
 	render() {
 		return (
 			<div>
-				Message Board
 				<Query query={getBoard} fetchPolicy='network-only'>
 					{({ subscribeToMore, loading, error, data }) => {
 						console.log('board data', data);

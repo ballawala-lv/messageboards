@@ -1,15 +1,16 @@
 import gql from 'graphql-tag';
+import {BOARD_ID} from '../constants';
 
 export default gql(
 	`
 		query GetBoard{
-		  getBoard(id:"6d9b986a-5695-4c87-893a-44f8e0cbf75f"){
+		  getBoard(id:"${BOARD_ID}"){
 			id
 			title
-			messages {items {
+			messages(limit:100 sortDirection:DESC) {items {
 			  username
-			  createdAt
 			  message
+			  createdAt
 			}
 			}
 		  }

@@ -20,14 +20,12 @@ export default class CreateMessageApp extends Component {
 						console.log('data is', data);
 						return (
 							<div>
-								username: {user}
 								<form onSubmit={
 									e => {
 										e.preventDefault();
 										createMessage({
 											variables: {
 												username: user,
-												createdAt: 'today',
 												message: input.value
 											}
 										})

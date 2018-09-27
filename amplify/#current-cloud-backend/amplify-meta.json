@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/messageboards-20180913130001-deployment/amplify-cfn-templates/auth/messageboardpools-cloudformation-template.yml",
 				"logicalId": "authmessageboardpools"
 			},
-			"lastPushTimeStamp": "2018-09-13T19:04:04.895Z",
+			"lastPushTimeStamp": "2018-09-20T03:00:09.342Z",
 			"output": {
 				"AppClientSecret": "hipcv1pr8pt76d2ujv896sgth777ra7a1rdrkshqvs7ngde5rr2",
 				"UserPoolId": "us-east-1_h0xBaJvIH",
@@ -49,8 +49,8 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/messageboards-20180913130001-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"logicalId": "apimessageboardsapi"
 			},
-			"lastPushTimeStamp": "2018-09-13T19:04:04.897Z",
-			"lastPushDirHash": "y47qfEp+n+0/vxKx0QW6qdY83UI="
+			"lastPushTimeStamp": "2018-09-20T03:00:09.346Z",
+			"lastPushDirHash": "bOktzmN+AgCuwa9n8/325O2SteU="
 		}
 	}
 }

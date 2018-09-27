@@ -118,7 +118,7 @@ input DeleteBoardInput {
 type Message {
   id: ID!
   username: String!
-  createdAt: String!
+  other: String
   message: String!
   board: Board
 }
@@ -131,7 +131,7 @@ type ModelMessageConnection {
 input ModelMessageFilterInput {
   id: ModelIDFilterInput
   username: ModelStringFilterInput
-  createdAt: ModelStringFilterInput
+  other: ModelStringFilterInput
   message: ModelStringFilterInput
   and: [ModelMessageFilterInput]
   or: [ModelMessageFilterInput]
@@ -140,7 +140,7 @@ input ModelMessageFilterInput {
 
 input CreateMessageInput {
   username: String!
-  createdAt: String!
+  other: String
   message: String!
   messageBoardId: ID
 }
@@ -148,7 +148,7 @@ input CreateMessageInput {
 input UpdateMessageInput {
   id: ID!
   username: String
-  createdAt: String
+  other: String
   message: String
   messageBoardId: ID
 }

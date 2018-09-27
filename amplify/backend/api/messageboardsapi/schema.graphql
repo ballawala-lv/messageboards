@@ -7,7 +7,7 @@ type Board @model {
 type Message @model {
 	id: ID!
 	username: String!
-	createdAt: String!,
+	other: String,
 	message: String!
 	board: Board @connection(name:"BoardMessages")
 }

@@ -7,7 +7,7 @@ export default gql(
 		  getBoard(id:"${BOARD_ID}"){
 			id
 			title
-			messages(limit:100) {items {
+			messages(limit:100 sortDirection:ASC) {items {
 			  username
 			  message
 			  createdAt

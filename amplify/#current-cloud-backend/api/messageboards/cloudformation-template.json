@@ -1,0 +1,1106 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Metadata": {},
+    "Parameters": {
+        "AppSyncApiName": {
+            "Type": "String",
+            "Description": "The name of the AppSync API",
+            "Default": "AppSyncSimpleTransform"
+        },
+        "DynamoDBModelTableReadIOPS": {
+            "Type": "Number",
+            "Description": "The number of read IOPS the table should support.",
+            "Default": 5
+        },
+        "DynamoDBModelTableWriteIOPS": {
+            "Type": "Number",
+            "Description": "The number of write IOPS the table should support.",
+            "Default": 5
+        },
+        "AuthCognitoUserPoolId": {
+            "Type": "String",
+            "Description": "The id of an existing User Pool to connect. If this is changed, a user pool will not be created for you.",
+            "Default": "NONE"
+        },
+        "AuthCognitoUserPoolName": {
+            "Type": "String",
+            "Description": "The name of the AppSync API",
+            "Default": "AppSyncUserPool"
+        },
+        "AuthCognitoUserPoolMobileClientName": {
+            "Type": "String",
+            "Description": "The name of the native user pool client.",
+            "Default": "CognitoNativeClient"
+        },
+        "AuthCognitoUserPoolJSClientName": {
+            "Type": "String",
+            "Description": "The name of the web user pool client.",
+            "Default": "CognitoJSClient"
+        },
+        "AuthCognitoUserPoolRefreshTokenValidity": {
+            "Type": "Number",
+            "Description": "The time limit, in days, after which the refresh token is no longer valid.",
+            "Default": 30
+        },
+        "schemaGraphql": {
+            "Type": "String",
+            "Description": "The S3 location for the Schema: schema.graphql"
+        },
+        "QueryGetBoardRequest": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Query.getBoard.request"
+        },
+        "QueryGetBoardResponse": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Query.getBoard.response"
+        },
+        "QueryListBoardsRequest": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Query.listBoards.request"
+        },
+        "QueryListBoardsResponse": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Query.listBoards.response"
+        },
+        "MutationCreateBoardRequest": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Mutation.createBoard.request"
+        },
+        "MutationCreateBoardResponse": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Mutation.createBoard.response"
+        },
+        "MutationUpdateBoardRequest": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Mutation.updateBoard.request"
+        },
+        "MutationUpdateBoardResponse": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Mutation.updateBoard.response"
+        },
+        "MutationDeleteBoardRequest": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Mutation.deleteBoard.request"
+        },
+        "MutationDeleteBoardResponse": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Mutation.deleteBoard.response"
+        },
+        "QueryGetMessageRequest": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Query.getMessage.request"
+        },
+        "QueryGetMessageResponse": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Query.getMessage.response"
+        },
+        "QueryListMessagesRequest": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Query.listMessages.request"
+        },
+        "QueryListMessagesResponse": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Query.listMessages.response"
+        },
+        "MutationCreateMessageRequest": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Mutation.createMessage.request"
+        },
+        "MutationCreateMessageResponse": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Mutation.createMessage.response"
+        },
+        "MutationUpdateMessageRequest": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Mutation.updateMessage.request"
+        },
+        "MutationUpdateMessageResponse": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Mutation.updateMessage.response"
+        },
+        "MutationDeleteMessageRequest": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Mutation.deleteMessage.request"
+        },
+        "MutationDeleteMessageResponse": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Mutation.deleteMessage.response"
+        },
+        "BoardMessagesRequest": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Board.messages.request"
+        },
+        "BoardMessagesResponse": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Board.messages.response"
+        },
+        "MessageBoardRequest": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Message.board.request"
+        },
+        "MessageBoardResponse": {
+            "Type": "String",
+            "Description": "The S3 location for the Resolver: Message.board.response"
+        }
+    },
+    "Resources": {
+        "GraphQLSchema": {
+            "Type": "AWS::AppSync::GraphQLSchema",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DefinitionS3Location": {
+                    "Ref": "schemaGraphql"
+                }
+            }
+        },
+        "GraphQLAPI": {
+            "Type": "AWS::AppSync::GraphQLApi",
+            "Properties": {
+                "Name": {
+                    "Ref": "AppSyncApiName"
+                },
+                "AuthenticationType": "AMAZON_COGNITO_USER_POOLS",
+                "UserPoolConfig": {
+                    "UserPoolId": {
+                        "Fn::If": [
+                            "AuthShouldCreateUserPool",
+                            {
+                                "Ref": "AuthCognitoUserPool"
+                            },
+                            {
+                                "Ref": "AuthCognitoUserPoolId"
+                            }
+                        ]
+                    },
+                    "AwsRegion": {
+                        "Ref": "AWS::Region"
+                    },
+                    "DefaultAction": "ALLOW"
+                }
+            }
+        },
+        "GraphQLAPIKey": {
+            "Type": "AWS::AppSync::ApiKey",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                }
+            }
+        },
+        "BoardTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "Board",
+                            {
+                                "Fn::GetAtt": [
+                                    "GraphQLAPI",
+                                    "ApiId"
+                                ]
+                            }
+                        ]
+                    ]
+                },
+                "KeySchema": [
+                    {
+                        "AttributeName": "id",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": "id",
+                        "AttributeType": "S"
+                    }
+                ],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": {
+                        "Ref": "DynamoDBModelTableReadIOPS"
+                    },
+                    "WriteCapacityUnits": {
+                        "Ref": "DynamoDBModelTableWriteIOPS"
+                    }
+                },
+                "StreamSpecification": {
+                    "StreamViewType": "NEW_AND_OLD_IMAGES"
+                }
+            }
+        },
+        "BoardIAMRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "BoardTable",
+                            "role",
+                            {
+                                "Fn::GetAtt": [
+                                    "GraphQLAPI",
+                                    "ApiId"
+                                ]
+                            }
+                        ]
+                    ]
+                },
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "appsync.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": "DynamoDBAccess",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "dynamodb:BatchGetItem",
+                                        "dynamodb:BatchWriteItem",
+                                        "dynamodb:PutItem",
+                                        "dynamodb:DeleteItem",
+                                        "dynamodb:GetItem",
+                                        "dynamodb:Scan",
+                                        "dynamodb:Query",
+                                        "dynamodb:UpdateItem"
+                                    ],
+                                    "Resource": [
+                                        {
+                                            "Fn::GetAtt": [
+                                                "BoardTable",
+                                                "Arn"
+                                            ]
+                                        },
+                                        {
+                                            "Fn::Join": [
+                                                "/",
+                                                [
+                                                    {
+                                                        "Fn::GetAtt": [
+                                                            "BoardTable",
+                                                            "Arn"
+                                                        ]
+                                                    },
+                                                    "*"
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "BoardDataSource": {
+            "Type": "AWS::AppSync::DataSource",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "Name": "BoardTable",
+                "Type": "AMAZON_DYNAMODB",
+                "ServiceRoleArn": {
+                    "Fn::GetAtt": [
+                        "BoardIAMRole",
+                        "Arn"
+                    ]
+                },
+                "DynamoDBConfig": {
+                    "AwsRegion": {
+                        "Fn::Select": [
+                            3,
+                            {
+                                "Fn::Split": [
+                                    ":",
+                                    {
+                                        "Fn::GetAtt": [
+                                            "BoardTable",
+                                            "Arn"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "TableName": {
+                        "Ref": "BoardTable"
+                    }
+                }
+            }
+        },
+        "GetBoardResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "BoardDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "getBoard",
+                "TypeName": "Query",
+                "RequestMappingTemplateS3Location": {
+                    "Ref": "QueryGetBoardRequest"
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Ref": "QueryGetBoardResponse"
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "ListBoardResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "BoardDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "listBoards",
+                "TypeName": "Query",
+                "RequestMappingTemplateS3Location": {
+                    "Ref": "QueryListBoardsRequest"
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Ref": "QueryListBoardsResponse"
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "CreateBoardResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "BoardDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "createBoard",
+                "TypeName": "Mutation",
+                "RequestMappingTemplateS3Location": {
+                    "Ref": "MutationCreateBoardRequest"
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Ref": "MutationCreateBoardResponse"
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "UpdateBoardResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "BoardDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "updateBoard",
+                "TypeName": "Mutation",
+                "RequestMappingTemplateS3Location": {
+                    "Ref": "MutationUpdateBoardRequest"
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Ref": "MutationUpdateBoardResponse"
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "DeleteBoardResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "BoardDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "deleteBoard",
+                "TypeName": "Mutation",
+                "RequestMappingTemplateS3Location": {
+                    "Ref": "MutationDeleteBoardRequest"
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Ref": "MutationDeleteBoardResponse"
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "MessageTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "Message",
+                            {
+                                "Fn::GetAtt": [
+                                    "GraphQLAPI",
+                                    "ApiId"
+                                ]
+                            }
+                        ]
+                    ]
+                },
+                "KeySchema": [
+                    {
+                        "AttributeName": "id",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": "id",
+                        "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "messageBoardId",
+                        "AttributeType": "S"
+                    }
+                ],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": {
+                        "Ref": "DynamoDBModelTableReadIOPS"
+                    },
+                    "WriteCapacityUnits": {
+                        "Ref": "DynamoDBModelTableWriteIOPS"
+                    }
+                },
+                "StreamSpecification": {
+                    "StreamViewType": "NEW_AND_OLD_IMAGES"
+                },
+                "GlobalSecondaryIndexes": [
+                    {
+                        "IndexName": "gsi-BoardMessages",
+                        "KeySchema": [
+                            {
+                                "AttributeName": "messageBoardId",
+                                "KeyType": "HASH"
+                            }
+                        ],
+                        "Projection": {
+                            "ProjectionType": "ALL"
+                        },
+                        "ProvisionedThroughput": {
+                            "ReadCapacityUnits": {
+                                "Ref": "DynamoDBModelTableReadIOPS"
+                            },
+                            "WriteCapacityUnits": {
+                                "Ref": "DynamoDBModelTableWriteIOPS"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "MessageIAMRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "MessageTable",
+                            "role",
+                            {
+                                "Fn::GetAtt": [
+                                    "GraphQLAPI",
+                                    "ApiId"
+                                ]
+                            }
+                        ]
+                    ]
+                },
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "appsync.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": "DynamoDBAccess",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "dynamodb:BatchGetItem",
+                                        "dynamodb:BatchWriteItem",
+                                        "dynamodb:PutItem",
+                                        "dynamodb:DeleteItem",
+                                        "dynamodb:GetItem",
+                                        "dynamodb:Scan",
+                                        "dynamodb:Query",
+                                        "dynamodb:UpdateItem"
+                                    ],
+                                    "Resource": [
+                                        {
+                                            "Fn::GetAtt": [
+                                                "MessageTable",
+                                                "Arn"
+                                            ]
+                                        },
+                                        {
+                                            "Fn::Join": [
+                                                "/",
+                                                [
+                                                    {
+                                                        "Fn::GetAtt": [
+                                                            "MessageTable",
+                                                            "Arn"
+                                                        ]
+                                                    },
+                                                    "*"
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "MessageDataSource": {
+            "Type": "AWS::AppSync::DataSource",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "Name": "MessageTable",
+                "Type": "AMAZON_DYNAMODB",
+                "ServiceRoleArn": {
+                    "Fn::GetAtt": [
+                        "MessageIAMRole",
+                        "Arn"
+                    ]
+                },
+                "DynamoDBConfig": {
+                    "AwsRegion": {
+                        "Fn::Select": [
+                            3,
+                            {
+                                "Fn::Split": [
+                                    ":",
+                                    {
+                                        "Fn::GetAtt": [
+                                            "MessageTable",
+                                            "Arn"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "TableName": {
+                        "Ref": "MessageTable"
+                    }
+                }
+            }
+        },
+        "GetMessageResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "MessageDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "getMessage",
+                "TypeName": "Query",
+                "RequestMappingTemplateS3Location": {
+                    "Ref": "QueryGetMessageRequest"
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Ref": "QueryGetMessageResponse"
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "ListMessageResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "MessageDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "listMessages",
+                "TypeName": "Query",
+                "RequestMappingTemplateS3Location": {
+                    "Ref": "QueryListMessagesRequest"
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Ref": "QueryListMessagesResponse"
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "CreateMessageResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "MessageDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "createMessage",
+                "TypeName": "Mutation",
+                "RequestMappingTemplateS3Location": {
+                    "Ref": "MutationCreateMessageRequest"
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Ref": "MutationCreateMessageResponse"
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "UpdateMessageResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "MessageDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "updateMessage",
+                "TypeName": "Mutation",
+                "RequestMappingTemplateS3Location": {
+                    "Ref": "MutationUpdateMessageRequest"
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Ref": "MutationUpdateMessageResponse"
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "DeleteMessageResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "MessageDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "deleteMessage",
+                "TypeName": "Mutation",
+                "RequestMappingTemplateS3Location": {
+                    "Ref": "MutationDeleteMessageRequest"
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Ref": "MutationDeleteMessageResponse"
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "BoardmessagesResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "MessageDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "messages",
+                "TypeName": "Board",
+                "RequestMappingTemplateS3Location": {
+                    "Ref": "BoardMessagesRequest"
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Ref": "BoardMessagesResponse"
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "MessageboardResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "BoardDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "board",
+                "TypeName": "Message",
+                "RequestMappingTemplateS3Location": {
+                    "Ref": "MessageBoardRequest"
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Ref": "MessageBoardResponse"
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "AuthCognitoUserPool": {
+            "Type": "AWS::Cognito::UserPool",
+            "Properties": {
+                "AliasAttributes": [
+                    "email"
+                ],
+                "UserPoolName": {
+                    "Ref": "AuthCognitoUserPoolName"
+                },
+                "Policies": {
+                    "PasswordPolicy": {
+                        "MinimumLength": 8,
+                        "RequireLowercase": true,
+                        "RequireNumbers": true,
+                        "RequireSymbols": true,
+                        "RequireUppercase": true
+                    }
+                },
+                "AutoVerifiedAttributes": [
+                    "email"
+                ]
+            },
+            "Condition": "AuthShouldCreateUserPool"
+        },
+        "AuthCognitoUserPoolNativeClient": {
+            "Type": "AWS::Cognito::UserPoolClient",
+            "Properties": {
+                "ClientName": {
+                    "Ref": "AuthCognitoUserPoolMobileClientName"
+                },
+                "UserPoolId": {
+                    "Fn::If": [
+                        "AuthShouldCreateUserPool",
+                        {
+                            "Ref": "AuthCognitoUserPool"
+                        },
+                        {
+                            "Ref": "AuthCognitoUserPoolId"
+                        }
+                    ]
+                },
+                "GenerateSecret": true,
+                "RefreshTokenValidity": {
+                    "Ref": "AuthCognitoUserPoolRefreshTokenValidity"
+                },
+                "ReadAttributes": [],
+                "WriteAttributes": []
+            },
+            "Condition": "AuthShouldCreateUserPool"
+        },
+        "AuthCognitoUserPoolJSClient": {
+            "Type": "AWS::Cognito::UserPoolClient",
+            "Properties": {
+                "ClientName": {
+                    "Ref": "AuthCognitoUserPoolJSClientName"
+                },
+                "UserPoolId": {
+                    "Fn::If": [
+                        "AuthShouldCreateUserPool",
+                        {
+                            "Ref": "AuthCognitoUserPool"
+                        },
+                        {
+                            "Ref": "AuthCognitoUserPoolId"
+                        }
+                    ]
+                },
+                "GenerateSecret": false,
+                "RefreshTokenValidity": {
+                    "Ref": "AuthCognitoUserPoolRefreshTokenValidity"
+                },
+                "ReadAttributes": [],
+                "WriteAttributes": []
+            },
+            "Condition": "AuthShouldCreateUserPool"
+        }
+    },
+    "Outputs": {
+        "GraphQLAPIIdOutput": {
+            "Description": "Your GraphQL API ID.",
+            "Value": {
+                "Fn::GetAtt": [
+                    "GraphQLAPI",
+                    "ApiId"
+                ]
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Join": [
+                        ":",
+                        [
+                            {
+                                "Ref": "AWS::StackName"
+                            },
+                            "GraphQLApiId"
+                        ]
+                    ]
+                }
+            }
+        },
+        "GraphQLAPIEndpointOutput": {
+            "Description": "Your GraphQL API endpoint.",
+            "Value": {
+                "Fn::GetAtt": [
+                    "GraphQLAPI",
+                    "GraphQLUrl"
+                ]
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Join": [
+                        ":",
+                        [
+                            {
+                                "Ref": "AWS::StackName"
+                            },
+                            "GraphQLApiEndpoint"
+                        ]
+                    ]
+                }
+            }
+        },
+        "GraphQLAPIKeyOutput": {
+            "Description": "Your GraphQL API key. Provide via 'x-api-key' header.",
+            "Value": {
+                "Fn::GetAtt": [
+                    "GraphQLAPIKey",
+                    "ApiKey"
+                ]
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Join": [
+                        ":",
+                        [
+                            {
+                                "Ref": "AWS::StackName"
+                            },
+                            "GraphQLApiKey"
+                        ]
+                    ]
+                }
+            }
+        },
+        "AuthCognitoUserPoolNativeClientId": {
+            "Description": "Amazon Cognito UserPools native client ID",
+            "Value": {
+                "Fn::If": [
+                    "AuthShouldCreateUserPool",
+                    {
+                        "Ref": "AuthCognitoUserPoolNativeClient"
+                    },
+                    {
+                        "Fn::Join": [
+                            " ",
+                            [
+                                "See UserPool:",
+                                {
+                                    "Ref": "AuthCognitoUserPoolId"
+                                }
+                            ]
+                        ]
+                    }
+                ]
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Join": [
+                        ":",
+                        [
+                            {
+                                "Ref": "AWS::StackName"
+                            },
+                            "CognitoNativeClient"
+                        ]
+                    ]
+                }
+            }
+        },
+        "AuthCognitoUserPoolJSClientId": {
+            "Description": "Amazon Cognito UserPools JS client ID",
+            "Value": {
+                "Fn::If": [
+                    "AuthShouldCreateUserPool",
+                    {
+                        "Ref": "AuthCognitoUserPoolJSClient"
+                    },
+                    {
+                        "Fn::Join": [
+                            " ",
+                            [
+                                "See UserPool:",
+                                {
+                                    "Ref": "AuthCognitoUserPoolId"
+                                }
+                            ]
+                        ]
+                    }
+                ]
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Join": [
+                        ":",
+                        [
+                            {
+                                "Ref": "AWS::StackName"
+                            },
+                            "CognitoJSClient"
+                        ]
+                    ]
+                }
+            }
+        },
+        "AuthCognitoUserPoolIdOutput": {
+            "Description": "Amazon Cognito UserPool id",
+            "Value": {
+                "Fn::If": [
+                    "AuthShouldCreateUserPool",
+                    {
+                        "Ref": "AuthCognitoUserPool"
+                    },
+                    {
+                        "Ref": "AuthCognitoUserPoolId"
+                    }
+                ]
+            },
+            "Export": {
+                "Name": {
+                    "Fn::Join": [
+                        ":",
+                        [
+                            {
+                                "Ref": "AWS::StackName"
+                            },
+                            "CognitoUserPoolId"
+                        ]
+                    ]
+                }
+            }
+        }
+    },
+    "Conditions": {
+        "AuthShouldCreateUserPool": {
+            "Fn::Equals": [
+                {
+                    "Ref": "AuthCognitoUserPoolId"
+                },
+                "NONE"
+            ]
+        }
+    }
+}
